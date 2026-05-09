@@ -37,7 +37,7 @@ jobs:
           
           if [ -n "$use_worker_assets" ]; then
             cd frontend/
-            # Force success (|| true) because pnpm v10 often exits with 1 in CI
+            # Force success to bypass pnpm v10's strict exit codes in CI
             pnpm install --no-frozen-lockfile --dangerously-allow-all-builds || true
             if [ -n "$use_worker_assets_with_telegram" ]; then
               pnpm build:telegram:pages
@@ -51,17 +51,19 @@ jobs:
           export use_mail_wasm_parser=${{ secrets.BACKEND_USE_MAIL_WASM_PARSER }}
           
           cd worker/
+          # Write the wrangler.toml from your secrets
           printf '%s\n' "$WRANGLER_TOML_CONTENT" > wrangler.toml
           
-          # ✅ Force success to move past the pnpm v10 environment check
+          # Force success on install; we know scripts are running from the logs
           pnpm install --no-frozen-lockfile --dangerously-allow-all-builds || true
 
           if [ -n "$use_mail_wasm_parser" ]; then
+            echo "Using mail-parser-wasm-worker"
             pnpm add mail-parser-wasm-worker --dangerously-allow-all-builds || true
             git apply ../.github/config/mail-parser-wasm-worker.patch
           fi
 
-          # ✅ Run the actual deployment. If this fails, it's a Cloudflare issue.
+          # ✅ Execute deployment directly
           echo "Starting Wrangler deployment..."
           pnpm run deploy
           
