@@ -46,6 +46,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           FRONTEND_NAME: ${{ secrets.FRONTEND_NAME }}
+          # ✅ Fix for image_9fb21e.png: Allow pnpm to run build scripts for critical dependencies
+          PNPM_CONF_ONLY_BUILT_DEPENDENCIES: "esbuild,workerd,sharp,core-js-pure"
 
   deploy-telegram-frontend:
     runs-on: ubuntu-latest
@@ -83,3 +85,5 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TG_FRONTEND_NAME: ${{ secrets.TG_FRONTEND_NAME }}
+          # ✅ Fix for image_9fb21e.png: Allow pnpm to run build scripts for critical dependencies
+          PNPM_CONF_ONLY_BUILT_DEPENDENCIES: "esbuild,workerd,sharp,core-js-pure"
